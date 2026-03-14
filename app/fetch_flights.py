@@ -59,6 +59,12 @@ def make_dataframe(states):
 
     df = df.dropna(subset=["longitude", "latitude"])
     df = df.sort_values(by="baro_altitude", ascending=False)
+
+    df["longitude"] = df["longitude"].round(4)
+    df["latitude"] = df["latitude"].round(4)
+    df["baro_altitude"] = df["baro_altitude"].round(2)
+    df["velocity"] = df["velocity"].round(2)
+
     return df
 
 
