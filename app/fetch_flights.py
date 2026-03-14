@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+from pathlib import Path
 
 URL = "https://opensky-network.org/api/states/all"
 
@@ -67,10 +68,16 @@ def make_dataframe(states):
 
     return df
 
+def save_to_csv(df):
+    output_path = Path(__file__).resolve().parent.parent / "data" / "processed" / "flights.csv"
+    df.to_csv(output_path, index=False)
+
 
 if __name__ == "__main__":
     flights = fetch_flights()
     df = make_dataframe(flights)
+
+    save_to_csv(df)
 
     print("Total Karlsruhe-area flights:", len(df))
     print(df[[
