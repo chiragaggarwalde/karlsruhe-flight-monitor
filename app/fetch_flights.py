@@ -46,6 +46,18 @@ def fetch_flights():
 def make_dataframe(states):
     df = pd.DataFrame(states, columns=COLUMNS)
     df["callsign"] = df["callsign"].fillna("").str.strip()
+
+    df = df[[
+        "callsign",
+        "origin_country",
+        "longitude",
+        "latitude",
+        "baro_altitude",
+        "velocity",
+        "on_ground",
+    ]]
+
+    df = df.sort_values(by="callsign")
     return df
 
 
