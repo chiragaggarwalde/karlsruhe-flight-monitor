@@ -67,4 +67,12 @@ if __name__ == "__main__":
     df = make_dataframe(flights)
 
     print("Total Karlsruhe-area flights:", len(df))
-    print(df[["callsign", "origin_country", "longitude", "latitude"]].head(10).to_string(index=False))
+    print(df[[
+        "callsign",
+        "origin_country",
+        "longitude",
+        "latitude",
+        "baro_altitude",
+        "velocity",
+        "on_ground",
+    ]].head(10).to_string(index=False))
