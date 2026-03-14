@@ -57,7 +57,7 @@ def make_dataframe(states):
         "on_ground",
     ]]
 
-    df = df.sort_values(by="callsign")
+    df = df.sort_values(by="baro_altitude", ascending=False)
     return df
 
 
