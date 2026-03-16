@@ -80,6 +80,9 @@ def print_stats(df):
     print("Countries:", df["origin_country"].nunique())
     print("Highest altitude:", df["baro_altitude"].max())
     print("Average speed:", round(df["velocity"].mean(), 2))
+    print("Lowest altitude:", df["baro_altitude"].min())
+    print("Average altitude:", round(df["baro_altitude"].mean(), 2))
+    print("On-ground flights:", df["on_ground"].sum())
 
 
 if __name__ == "__main__":
