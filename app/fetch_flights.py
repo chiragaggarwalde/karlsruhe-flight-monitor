@@ -60,7 +60,6 @@ def make_dataframe(states):
     ]]
 
     df = df.dropna(subset=["longitude", "latitude"])
-    df = df.sort_values(by=["origin_country", "baro_altitude"], ascending=[True, False])
     df = df.sort_values(by="baro_altitude", ascending=False)
 
     df["longitude"] = df["longitude"].round(4)
@@ -88,6 +87,11 @@ def print_stats(df):
 
     print()
 
+def print_top_countries(df):
+    print("Top countries:")
+    print(df["origin_country"].value_counts().head(3).to_string())
+    print()
+
 
 if __name__ == "__main__":
     flights = fetch_flights()
@@ -99,6 +103,9 @@ if __name__ == "__main__":
         save_to_csv(df)
         print("Saved file: data/processed/flights.csv")
         print(f"Total Karlsruhe-area flights: {len(df)}")
+        print_stats(df)
+        print_top_countries(df)
+        print("Nearby flights:")
         print(df[[
             "callsign",
             "origin_country",
@@ -108,6 +115,6 @@ if __name__ == "__main__":
             "velocity",
             "on_ground",
             "fetched_at",
-        ]].head(10).to_string(index=False))
+        ]].head(5).to_string(index=False))
+        print()
 
-        print_stats(df)
