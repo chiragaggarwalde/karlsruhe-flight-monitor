@@ -78,6 +78,7 @@ def save_to_csv(df):
 def print_stats(df):
     print("Total flights:", len(df))
     print("Countries:", df["origin_country"].nunique())
+    print("Highest altitude:", df["baro_altitude"].max())
 
 
 if __name__ == "__main__":
