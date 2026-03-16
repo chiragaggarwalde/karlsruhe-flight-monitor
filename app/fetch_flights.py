@@ -84,14 +84,21 @@ def print_stats(df):
     print("On-ground flights:", df["on_ground"].sum())
     print("Flights in air:", (~df["on_ground"]).sum())
     print("Most common country:", df["origin_country"].mode().iloc[0])
+    print("Highest speed:", round(df["velocity"].max(), 2))
+    print("Lowest speed:", round(df["velocity"].min(), 2))
 
     print()
 
 def print_top_countries(df):
-    print("Top countries:")
+    print("Top 3 countries by flight count:")
     print(df["origin_country"].value_counts().head(3).to_string())
     print()
 
+def print_top_flight(df):
+    top_flight = df.iloc[0]
+    print("Highest altitude flight:")
+    print(top_flight.to_string())
+    print()
 
 if __name__ == "__main__":
     flights = fetch_flights()
@@ -101,10 +108,12 @@ if __name__ == "__main__":
         print("No flights found in selected area.")
     else:
         save_to_csv(df)
+        print("Rows saved:", len(df))
         print("Saved file: data/processed/flights.csv")
         print(f"Total Karlsruhe-area flights: {len(df)}")
         print_stats(df)
         print_top_countries(df)
+        print_top_flight(df)
         print("Nearby flights:")
         print(df[[
             "callsign",
