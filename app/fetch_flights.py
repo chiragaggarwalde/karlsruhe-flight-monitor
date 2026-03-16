@@ -83,6 +83,10 @@ def print_stats(df):
     print("Lowest altitude:", df["baro_altitude"].min())
     print("Average altitude:", round(df["baro_altitude"].mean(), 2))
     print("On-ground flights:", df["on_ground"].sum())
+    print("Flights in air:", (~df["on_ground"]).sum())
+    print("Most common country:", df["origin_country"].mode().iloc[0])
+
+    print()
 
 
 if __name__ == "__main__":
