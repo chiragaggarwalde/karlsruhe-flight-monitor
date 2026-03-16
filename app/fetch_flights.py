@@ -31,15 +31,18 @@ LAMAX = 49.8
 LOMIN = 7.5
 LOMAX = 9.8
 
+AREA_PARAMS = {
+    "lamin": LAMIN,
+    "lamax": LAMAX,
+    "lomin": LOMIN,
+    "lomax": LOMAX,
+}
+REQUEST_TIMEOUT = 30
+AREA_NAME = "Karlsruhe area"
 
 def fetch_flights():
-    params = {
-        "lamin": LAMIN,
-        "lamax": LAMAX,
-        "lomin": LOMIN,
-        "lomax": LOMAX,
-    }
-    response = requests.get(URL, params=params, timeout=30)
+    print(f"Fetching live flight data for {AREA_NAME}...")
+    response = requests.get(URL, params=AREA_PARAMS, timeout=REQUEST_TIMEOUT)
     response.raise_for_status()
     data = response.json()
     return data.get("states", [])
@@ -70,23 +73,24 @@ def make_dataframe(states):
 
     return df
 
+OUTPUT_FILE = Path(__file__).resolve().parent.parent / "data" / "processed" / "flights.csv"
 def save_to_csv(df):
-    output_path = Path(__file__).resolve().parent.parent / "data" / "processed" / "flights.csv"
-    df.to_csv(output_path, index=False)
+    df.to_csv(OUTPUT_FILE, index=False)
 
 def print_stats(df):
     print("Total flights:", len(df))
     print("Countries:", df["origin_country"].nunique())
-    print("Highest altitude:", df["baro_altitude"].max())
+    print("Highest altitude:", round(df["baro_altitude"].max(), 2))
     print("Average speed:", round(df["velocity"].mean(), 2))
-    print("Lowest altitude:", df["baro_altitude"].min())
+    print("Lowest altitude:", round(df["baro_altitude"].min(), 2))
     print("Average altitude:", round(df["baro_altitude"].mean(), 2))
     print("On-ground flights:", df["on_ground"].sum())
     print("Flights in air:", (~df["on_ground"]).sum())
     print("Most common country:", df["origin_country"].mode().iloc[0])
     print("Highest speed:", round(df["velocity"].max(), 2))
     print("Lowest speed:", round(df["velocity"].min(), 2))
-
+    print("Unique callsigns:", df["callsign"].nunique())
+    print("Missing callsigns:", (df["callsign"] == "").sum())
     print()
 
 def print_top_countries(df):
@@ -96,7 +100,7 @@ def print_top_countries(df):
 
 def print_top_flight(df):
     top_flight = df.iloc[0]
-    print("Highest altitude flight:")
+    print("Highest altitude flight details:")
     print(top_flight.to_string())
     print()
 
@@ -105,16 +109,22 @@ if __name__ == "__main__":
     df = make_dataframe(flights)
 
     if df.empty:
-        print("No flights found in selected area.")
+        print(f"No flights found in {AREA_NAME}.")
     else:
         save_to_csv(df)
+        print(f"Saved file: {OUTPUT_FILE.relative_to(Path(__file__).resolve().parent.parent)}")
         print("Rows saved:", len(df))
-        print("Saved file: data/processed/flights.csv")
-        print(f"Total Karlsruhe-area flights: {len(df)}")
+        print()
+        print(f"Total flights in {AREA_NAME}: {len(df)}")
+        print()
+
+        print("-" * 40)
         print_stats(df)
         print_top_countries(df)
         print_top_flight(df)
-        print("Nearby flights:")
+
+        print("-" * 40)
+        print(f"Nearby flights in {AREA_NAME}:")
         print(df[[
             "callsign",
             "origin_country",
